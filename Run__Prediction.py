@@ -1,7 +1,7 @@
 import numpy as np 
-from keras.models import load_model
 from pandas import read_csv
 from sklearn.preprocessing import MinMaxScaler
+from keras.models import load_model
 
 
 def transform_dataset(ds, lookback):
