@@ -6,10 +6,8 @@ import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
 import matplotlib.pyplot as plt
  
-# Configure hyperparameters. _____________________________________________________________________________________________________________
 
-# ADAMW optimiser hyperparameters.
-learning_rate = 0.001
+learning_rate = 0.01
 weight_decay = 0.001
 
 # Transformer hyperparameters.
@@ -19,17 +17,17 @@ transformer_layers = 8
 
 # Data hyperparameters.
 dataset = 'MCD.csv'
-lookback = 5
+lookback = 30
 train_test_split = 0.8
 
 # Size of hidden dimension feature vectors.
-projection_dim = 30
+projection_dim = 16
 
 # Number of transformations of query-key-value matrices.
-num_attention_heads = 16
+num_attention_heads =8
 
 # Input columnn number
-mlp_feature_dim = [6]
+mlp_feature_dim = [2]
 
 
 # Split dataset into train and test ______________________________________________________________________________________________________
@@ -126,7 +124,7 @@ if __name__ == "__main__":
             print(e)           
 # Load dataset.
     ds = pd.read_csv(dataset, header = 0).dropna()
-    ds = ds.drop(labels=['Date'], axis = 1 )
+    ds = ds.drop(labels=['Date','Open','High','Low','Adj Close','Volume'], axis = 1 )
 # OPTIONAL FEATURE - Research needed to determine if this is a good idea. 
     ds = MinMaxScaler().fit_transform(ds)
     
