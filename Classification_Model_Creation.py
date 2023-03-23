@@ -82,6 +82,7 @@ if __name__ == "__main__":
     number_of_classes = len(np.unique(y_train))
     input_shape = x_train.shape[1:]
 
+    model_address = "./Models/transformerClasification.h5"
     model = build_model(
         input_shape,
         head_size=256,
@@ -100,7 +101,7 @@ if __name__ == "__main__":
     )
     model.summary()
 
-    callbacks = [keras.callbacks.EarlyStopping(patience=10, restore_best_weights=True), keras.callbacks.ModelCheckpoint("./Models/transformerClasification.h5", save_best_only = True, monitor = 'val_sparse_categorical_accuracy')]
+    callbacks = [keras.callbacks.EarlyStopping(patience=10, restore_best_weights=True), keras.callbacks.ModelCheckpoint(model_address, save_best_only = True, monitor = 'val_sparse_categorical_accuracy')]
 
     model.fit(
         x_train,
