@@ -56,7 +56,8 @@ def build_model(imput_shape, head_size, num_heads, ff_dim, num_transformer_block
     return keras.Model(inputs=inputs, outputs=outputs)
 # Run File. _____________________________________________________________________________________________________________________________
 if __name__ == "__main__":
-# Check for GPU's.
+
+
     gpus = tf.config.experimental.list_physical_devices('GPU')
     print("Num GPUs Available: ", len(tf.config.experimental.list_physical_devices('GPU')))
     if gpus:
@@ -68,7 +69,7 @@ if __name__ == "__main__":
                        
     dataset_split = 0.8
     lookback = 30
-    dataset_address = 'MCD.csv'
+    dataset_address = './Data/Learning Data/MCD.csv'
     batch_size = 30
     dropout_rate = 0.1
 
@@ -84,12 +85,12 @@ if __name__ == "__main__":
     model = build_model(
         input_shape,
         head_size=256,
-        num_heads=4,
+        num_heads=8,
         ff_dim=4,
-        num_transformer_blocks=4,
-        mlp_units=[32],
-        mlp_dropout=0.4,
-        dropout=0.25,
+        num_transformer_blocks=8,
+        mlp_units=[8],
+        mlp_dropout=0.3,
+        dropout=0.01,
     )
 
     model.compile(
@@ -99,14 +100,14 @@ if __name__ == "__main__":
     )
     model.summary()
 
-    callbacks = [keras.callbacks.EarlyStopping(patience=10, restore_best_weights=True)]
+    callbacks = [keras.callbacks.EarlyStopping(patience=10, restore_best_weights=True), keras.callbacks.ModelCheckpoint("./Models/transformerClasification.h5", save_best_only = True, monitor = 'val_sparse_categorical_accuracy')]
 
     model.fit(
         x_train,
         y_train,
         validation_split=0.2,
         epochs=200,
-        batch_size=64,
+        batch_size=batch_size,
         callbacks=callbacks,
     )
 
