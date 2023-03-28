@@ -16,9 +16,10 @@ num_epochs = 100
 transformer_layers = 8
 
 # Data hyperparameters.
-dataset = 'MCD.csv'
+dataset = './Data/Learning Data/MCD.csv'
 lookback = 30
 train_test_split = 0.8
+features = 4
 
 # Size of hidden dimension feature vectors.
 projection_dim = 16
@@ -27,7 +28,7 @@ projection_dim = 16
 num_attention_heads =8
 
 # Input columnn number
-mlp_feature_dim = [2]
+mlp_feature_dim = [4]
 
 
 # Split dataset into train and test ______________________________________________________________________________________________________
@@ -69,7 +70,7 @@ def transformer(inputs, head_size, num_heads, dropout = 0):
     x = layers.Dropout(dropout)(x)
     x = layers.GlobalAveragePooling1D(data_format="channels_first")(x)
     x = mlp(x, hidden_units = mlp_feature_dim, dropout_rate = dropout)
-    outputs = layers.Dense(1)(x)
+    outputs = layers.Dense(features)(x)
     model = keras.Model(inputs = input, outputs = outputs)
     return keras.Model(input, outputs)
 
@@ -92,7 +93,7 @@ def run_vit_prediction(x_tr, y_tr, x_te, y_te, projection_dim, num_attention_hea
         optimizer = keras.optimizers.Adam(learning_rate = learning_rate)
     )
     model.summary()
-    callbacks = [keras.callbacks.ModelCheckpoint("transformer.h5", save_best_only = True, monitor = 'val_loss')]
+    callbacks = [keras.callbacks.ModelCheckpoint("./Models/transformer.h5", save_best_only = True, monitor = 'val_loss')]
     history = model.fit(
         x_tr,
         y_tr,
@@ -124,7 +125,7 @@ if __name__ == "__main__":
             print(e)           
 # Load dataset.
     ds = pd.read_csv(dataset, header = 0).dropna()
-    ds = ds.drop(labels=['Date','Open','High','Low','Adj Close','Volume'], axis = 1 )
+    ds = ds.drop(labels=['Date','Open','Adj Close'], axis = 1 )
 # OPTIONAL FEATURE - Research needed to determine if this is a good idea. 
     ds = MinMaxScaler().fit_transform(ds)
     

@@ -3,7 +3,7 @@ from collections import OrderedDict
 
 import numpy as np
 from keras.models import load_model
-from Classification_Model_Creation import transform_dataset
+from model_ClassificationTransformer import transform_dataset
 from pandas import read_csv
 from sklearn.preprocessing import MinMaxScaler
 import pandas as pd
@@ -32,5 +32,5 @@ def predict_future(transformed_dataset, training_range):
 
 if __name__ == "__main__":
     predicted_values = predict_future(x, lookback)
-    print(predicted_values.shape)
+    print(predicted_values)
 
