@@ -16,10 +16,10 @@ num_epochs = 100
 transformer_layers = 8
 
 # Data hyperparameters.
-dataset = './Data/Learning Data/MCD.csv'
+dataset = './Data/Learning Data/snp_btc_fullscope_daily.csv'
 lookback = 30
 train_test_split = 0.8
-features = 4
+features = 15
 
 # Size of hidden dimension feature vectors.
 projection_dim = 16
@@ -28,7 +28,7 @@ projection_dim = 16
 num_attention_heads =8
 
 # Input columnn number
-mlp_feature_dim = [4]
+mlp_feature_dim = [15]
 
 
 # Split dataset into train and test ______________________________________________________________________________________________________
@@ -125,7 +125,7 @@ if __name__ == "__main__":
             print(e)           
 # Load dataset.
     ds = pd.read_csv(dataset, header = 0).dropna()
-    ds = ds.drop(labels=['Date','Open','Adj Close'], axis = 1 )
+    ds = ds.drop(labels=['Date'], axis = 1 )
 # OPTIONAL FEATURE - Research needed to determine if this is a good idea. 
     ds = MinMaxScaler().fit_transform(ds)
     
