@@ -11,21 +11,21 @@ learning_rate = 0.01
 weight_decay = 0.001
 
 # Transformer hyperparameters.
-batch_size = 30
-num_epochs = 100
-transformer_layers = 8
+batch_size = 128
+num_epochs = 500
+transformer_layers = 64
 
 # Data hyperparameters.
 dataset = './Data/Learning Data/snp_btc_fullscope_daily.csv'
-lookback = 30
-train_test_split = 0.8
+lookback = 120
+train_test_split = 0.6
 features = 15
 
 # Size of hidden dimension feature vectors.
-projection_dim = 16
+projection_dim = 32
 
 # Number of transformations of query-key-value matrices.
-num_attention_heads =8
+num_attention_heads =32
 
 # Input columnn number
 mlp_feature_dim = [15]
@@ -42,7 +42,6 @@ def transform_dataset(ds, lookback):
     x = []
     y = []
     ds = np.array(ds)
-    print(ds[0:10])
     for i in range(lookback, ds.shape[0]):
         x.append(ds[i-lookback:i])                                                      
         y.append(ds[i,0])                                                               
@@ -103,6 +102,7 @@ def run_vit_prediction(x_tr, y_tr, x_te, y_te, projection_dim, num_attention_hea
         callbacks = callbacks
     )
     model.evaluate(x_te, y_te, verbose = 1)
+    keras.utils.plot_model(model, "Classification_transformer.png", show_shapes=True)
     return history
 
 
@@ -134,3 +134,4 @@ if __name__ == "__main__":
     test_x, test_y = transform_dataset(test, lookback)
     history = run_vit_prediction(train_x, train_y, test_x, test_y, projection_dim, num_attention_heads, batch_size, num_epochs)
     plot_results(history)
+    

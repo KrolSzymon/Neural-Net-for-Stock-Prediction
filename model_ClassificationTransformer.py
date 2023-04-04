@@ -93,7 +93,7 @@ if __name__ == "__main__":
         mlp_dropout=0.3,
         dropout=0.01,
     )
-
+    
     model.compile(
         loss="sparse_categorical_crossentropy",
         optimizer=keras.optimizers.Adam(learning_rate=1e-4),
