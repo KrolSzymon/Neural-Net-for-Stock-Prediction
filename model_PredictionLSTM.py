@@ -13,7 +13,7 @@ if __name__ == "__main__":
     data_address = './Data/Learning Data/snp_btc_fullscope_daily.csv'
     model_address = './Models/LSTM.h5'
     validation_split = 0.8
-    lookback = 30
+    lookback = 300
     epoch_amount = 100
     batch = 30
     features = 15

@@ -9,10 +9,11 @@ from sklearn.preprocessing import MinMaxScaler
 import pandas as pd
 import matplotlib.pyplot as pp
 from numpy import newaxis
+import matplotlib.pyplot as plt
 
 def predict_future(prediction, training_range, num_features, timesteps_in_future):
     transformed_list= prediction[-training_range:]
-    print(prediction[-1])
+
     for _ in range(timesteps_in_future):      
         transformed_list = transformed_list.reshape((1, training_range, num_features))
         out = model.predict(transformed_list)
@@ -27,22 +28,46 @@ def predict_future(prediction, training_range, num_features, timesteps_in_future
 
 if __name__ == "__main__":
     timesteps_in_future = 10
-    model = load_model('./Models/LSTM.h5')
+    model = load_model('./Models/transformer.h5')
     dataset = './Data/Learning Data/snp_btc_fullscope_daily.csv'
     scaler = MinMaxScaler()
     lookback = 30
+    plt.style.use('default')
 
     dataset = read_csv(dataset, header = 0).dropna()
-    dataset = dataset.drop(labels=['Date'], axis = 1 )
+    dataset_no_date = dataset.drop(labels=['Date'], axis = 1 )
+    dataset_no_date = dataset_no_date.astype('float32')
+    dataset_scaled = dataset_no_date
+   
 
-    dataset = scaler.fit_transform(dataset)
+    num_features = len(dataset_scaled.columns)
+    dataset_scaled = np.array(dataset_scaled)
+    
+    predicted_values = predict_future(dataset_scaled, lookback, num_features, timesteps_in_future) 
+    #predicted_values = scaler.inverse_transform(predicted_values)
+    
+    dataset.index = pd.DatetimeIndex(dataset['Date'])
 
-    x, y = transform_dataset(dataset, lookback)
-    prediction = model.predict(x)
-    print(prediction[-1])
-    num_features = len(prediction[0])
+    predicted_values = pd.DataFrame(data = predicted_values, columns = dataset_no_date.columns)
 
-    predicted_values = predict_future(prediction, lookback, num_features, timesteps_in_future) 
-    predicted_values = scaler.inverse_transform(predicted_values)
-    print(predicted_values)
+    last_date = dataset.tail(1).index.strftime("%Y-%m-%d")[0]
+    last_date = pd.to_datetime(last_date)
+
+    first_date = last_date + pd.DateOffset(days = 1)
+    predicted_values.index = pd.DatetimeIndex(pd.date_range(first_date, periods = timesteps_in_future, freq = 'D'))
+
+    plt.figure(figsize = (20,10), dpi = 150)
+
+    dataset['Open'].plot(label = 'Open' , color = 'blue')
+    dataset['High'].plot(label = 'High', color = 'green')
+    dataset['Low'].plot(label = 'Low', color = 'orange')
+    predicted_values['Open'].plot(label = 'Open - BTC Prediction', color = 'red')
+    predicted_values['High'].plot(label = 'High - BTC Prediction', color = 'purple')
+    predicted_values['Low'].plot(label = 'Low - BTC Prediction', color = 'yellow')
+    plt.legend()
+    plt.title('BTC and S&P 500 Open Price Prediction')
+    plt.show()
+
+
+  
 

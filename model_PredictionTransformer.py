@@ -11,13 +11,13 @@ learning_rate = 0.01
 weight_decay = 0.001
 
 # Transformer hyperparameters.
-batch_size = 128
+batch_size = 30
 num_epochs = 500
 transformer_layers = 64
 
 # Data hyperparameters.
 dataset = './Data/Learning Data/snp_btc_fullscope_daily.csv'
-lookback = 120
+lookback = 300
 train_test_split = 0.6
 features = 15
 

@@ -3,7 +3,7 @@ import pandas as pd
 import tensorflow as tf
 from tensorflow import keras
 from keras import layers
-
+from sklearn.preprocessing import MinMaxScaler 
 
 def split_dataset(data, train_test_split):
     train_size = int(len(data) * train_test_split)
@@ -17,11 +17,11 @@ def transform_dataset(ds, lookback):
     for i in range(lookback, ds.shape[0]):
         if i+1 >= len(ds): break
         x.append(ds[i-lookback:i])  
-        if(ds[i + 1] == ds[i]):
+        if(ds[i + 1][0] == ds[i][0]):
             y.append(1)
-        elif(ds[i + 1] > ds[i]):
+        elif(ds[i + 1][0] > ds[i][0]):
             y.append(2)
-        elif(ds[i + 1] < ds[i]):
+        elif(ds[i + 1][0] < ds[i][0]):
             y.append(0)                                                                 
     x= np.array(x)                                                                             
     y= np.array(y)
@@ -69,16 +69,17 @@ if __name__ == "__main__":
                        
     dataset_split = 0.8
     lookback = 30
-    dataset_address = './Data/Learning Data/MCD.csv'
+    dataset_address = './Data/Learning Data/snp_btc_fullscope_daily.csv'
     batch_size = 30
     dropout_rate = 0.1
-
+    scaler = MinMaxScaler()
     dataset = pd.read_csv(dataset_address)
-    dataset = dataset.drop(labels=['Date','Open','High','Low','Adj Close','Volume'], axis = 1 )
+    dataset = dataset.drop(labels=['Date'], axis = 1 )
+    dataset = scaler.fit_transform(dataset)
     data, test_data = split_dataset(dataset, dataset_split)
     x_train, y_train = transform_dataset(data, lookback)
     x_test, y_test = transform_dataset(test_data, lookback)
-
+    print(x_train)
     number_of_classes = len(np.unique(y_train))
     input_shape = x_train.shape[1:]
 
