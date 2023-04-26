@@ -28,23 +28,24 @@ def predict_future(prediction, training_range, num_features, timesteps_in_future
 
 if __name__ == "__main__":
     timesteps_in_future = 10
-    model = load_model('./Models/transformer.h5')
+    model = load_model('./Models/LSTM(scaled).h5')
     dataset = './Data/Learning Data/snp_btc_fullscope_daily.csv'
     scaler = MinMaxScaler()
-    lookback = 30
+    lookback = 300
     plt.style.use('default')
 
     dataset = read_csv(dataset, header = 0).dropna()
     dataset_no_date = dataset.drop(labels=['Date'], axis = 1 )
     dataset_no_date = dataset_no_date.astype('float32')
-    dataset_scaled = dataset_no_date
+    
    
 
-    num_features = len(dataset_scaled.columns)
+    num_features = len(dataset_no_date.columns)
+    dataset_scaled = scaler.fit_transform(dataset_no_date)
     dataset_scaled = np.array(dataset_scaled)
     
     predicted_values = predict_future(dataset_scaled, lookback, num_features, timesteps_in_future) 
-    #predicted_values = scaler.inverse_transform(predicted_values)
+    predicted_values = scaler.inverse_transform(predicted_values)
     
     dataset.index = pd.DatetimeIndex(dataset['Date'])
 
@@ -59,11 +60,9 @@ if __name__ == "__main__":
     plt.figure(figsize = (20,10), dpi = 150)
 
     dataset['Open'].plot(label = 'Open' , color = 'blue')
-    dataset['High'].plot(label = 'High', color = 'green')
-    dataset['Low'].plot(label = 'Low', color = 'orange')
-    predicted_values['Open'].plot(label = 'Open - BTC Prediction', color = 'red')
-    predicted_values['High'].plot(label = 'High - BTC Prediction', color = 'purple')
-    predicted_values['Low'].plot(label = 'Low - BTC Prediction', color = 'yellow')
+    predicted_values['Open'].plot(label = 'Open - Prediction', color = 'red')
+
+
     plt.legend()
     plt.title('BTC and S&P 500 Open Price Prediction')
     plt.show()

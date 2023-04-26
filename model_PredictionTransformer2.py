@@ -56,23 +56,23 @@ def plot_results(history):
 
 if __name__ == "__main__":
     dataset = './Data/Learning Data/snp_btc_fullscope_daily.csv'
-    head_size = 64
-    number_heads = 16
+    head_size = 256
+    number_heads = 8
     feature_dimensions = 15
     number_blocks = 8
-    perceptron_units = [15]
-    dropout = 0.1
-    mlp_dropout = 0.1
+    perceptron_units = [256]
+    dropout = 0.25
+    mlp_dropout = 0.4
     lookback = 30
     train_test_split = 0.8
-    number_epochs = 100
-    batch_size = 16
+    number_epochs = 1000
+    batch_size = 30
     validation_split = 0.2
     scaler = MinMaxScaler()
 
     dataset = pd.read_csv(dataset).dropna()
     dataset = dataset.drop('Date', axis = 1)
-    #dataset = MinMaxScaler().fit_transform(dataset)
+    dataset = MinMaxScaler().fit_transform(dataset)
     train, test = split_dataset(dataset, train_test_split)  
     train_x, train_y = transform_dataset(train, lookback)
     test_x, test_y = transform_dataset(test, lookback)
@@ -83,3 +83,10 @@ if __name__ == "__main__":
     callbacks = [keras.callbacks.ModelCheckpoint("./Models/transformer.h5", save_best_only = True, monitor = 'val_loss')]
     history = model.fit(train_x, train_y, epochs = number_epochs, batch_size = batch_size, validation_split = validation_split, callbacks = callbacks)
     plot_results(history)
+    model = keras.models.load_model("./Models/transformer.h5")
+    training_performance = model.predict(train_x)
+    training_performance = pd.DataFrame(data = {'Training Predictions': training_performance[:,0], 'Training Actual': train_y})
+    plt.plot(training_performance['Training Predictions'], color = 'red', label = 'Predicted')
+    plt.plot(training_performance['Training Actual'], color = 'blue', label = 'Actual')
+    plt.legend()
+    plt.show()
