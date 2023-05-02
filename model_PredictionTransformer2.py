@@ -55,18 +55,18 @@ def plot_results(history):
     plt.show()
 
 if __name__ == "__main__":
-    dataset = './Data/Learning Data/snp_btc_fullscope_daily.csv'
-    head_size = 256
-    number_heads = 8
+    dataset = './Data/BTC.csv'
+    head_size = 128
+    number_heads = 16
     feature_dimensions = 15
-    number_blocks = 8
-    perceptron_units = [256]
+    number_blocks = 4
+    perceptron_units = [128]
     dropout = 0.25
     mlp_dropout = 0.4
-    lookback = 30
+    lookback = 100
     train_test_split = 0.8
-    number_epochs = 1000
-    batch_size = 30
+    number_epochs = 500
+    batch_size = 100
     validation_split = 0.2
     scaler = MinMaxScaler()
 
@@ -79,11 +79,12 @@ if __name__ == "__main__":
     inpout_shape = train_x.shape[1:]
 
     model = build_model(inpout_shape, head_size, number_heads, feature_dimensions, number_blocks, perceptron_units, dropout, mlp_dropout)
+    #model = keras.models.load_model("./Models/transformer.h5")
     model.compile(optimizer = keras.optimizers.Adam(learning_rate = 0.01), loss = 'mean_squared_error')
-    callbacks = [keras.callbacks.ModelCheckpoint("./Models/transformer.h5", save_best_only = True, monitor = 'val_loss')]
+    callbacks = [keras.callbacks.ModelCheckpoint("./Models/transformer-100LB.h5", save_best_only = True, monitor = 'val_loss')]
     history = model.fit(train_x, train_y, epochs = number_epochs, batch_size = batch_size, validation_split = validation_split, callbacks = callbacks)
     plot_results(history)
-    model = keras.models.load_model("./Models/transformer.h5")
+
     training_performance = model.predict(train_x)
     training_performance = pd.DataFrame(data = {'Training Predictions': training_performance[:,0], 'Training Actual': train_y})
     plt.plot(training_performance['Training Predictions'], color = 'red', label = 'Predicted')

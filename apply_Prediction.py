@@ -1,13 +1,9 @@
-
-from collections import OrderedDict
-
 import numpy as np
 from keras.models import load_model
-from model_PredictionTransformer import transform_dataset
+from model_PredictionTransformer2 import transform_dataset
 from pandas import read_csv
 from sklearn.preprocessing import MinMaxScaler
 import pandas as pd
-import matplotlib.pyplot as pp
 from numpy import newaxis
 import matplotlib.pyplot as plt
 
@@ -28,10 +24,10 @@ def predict_future(prediction, training_range, num_features, timesteps_in_future
 
 if __name__ == "__main__":
     timesteps_in_future = 10
-    model = load_model('./Models/LSTM(scaled).h5')
-    dataset = './Data/Learning Data/snp_btc_fullscope_daily.csv'
+    model = load_model('./Models/transformer.h5')
+    dataset = './Data/BTC.csv'
     scaler = MinMaxScaler()
-    lookback = 300
+    lookback = 30
     plt.style.use('default')
 
     dataset = read_csv(dataset, header = 0).dropna()

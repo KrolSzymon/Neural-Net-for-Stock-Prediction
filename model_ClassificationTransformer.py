@@ -68,12 +68,12 @@ if __name__ == "__main__":
             print(e)
                        
     dataset_split = 0.8
-    lookback = 30
-    dataset_address = './Data/Learning Data/snp_btc_fullscope_daily.csv'
-    batch_size = 30
+    lookback = 100
+    dataset_address = './Data/HSBC.csv'
+    batch_size = 100
     dropout_rate = 0.1
     scaler = MinMaxScaler()
-    dataset = pd.read_csv(dataset_address)
+    dataset = pd.read_csv(dataset_address).dropna()
     dataset = dataset.drop(labels=['Date'], axis = 1 )
     dataset = scaler.fit_transform(dataset)
     data, test_data = split_dataset(dataset, dataset_split)
@@ -88,7 +88,7 @@ if __name__ == "__main__":
         input_shape,
         head_size=256,
         num_heads=8,
-        ff_dim=4,
+        ff_dim=15,
         num_transformer_blocks=8,
         mlp_units=[8],
         mlp_dropout=0.3,

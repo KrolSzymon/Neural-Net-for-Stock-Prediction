@@ -38,7 +38,7 @@ def create_dataset(ticker,csv_address):
     print (result.shape[1])
 
 if __name__ == "__main__":
-    ticker = 'MCD'
-    save_to = './Data/Learning Data/snp_mcd_fullscope_daily.csv'
+    ticker = 'UBER'
+    save_to = './Data/UBER.csv'
     create_dataset(ticker,save_to)
     
