@@ -22,7 +22,6 @@ if __name__ == "__main__":
     data_address = './Data/HSBC.csv'
     model_address = './Models/LSTM-HSBC-LB300.h5'
     scaler = MinMaxScaler()
-    optimizer = keras.optimizers.Adam(learning_rate=0.005)
     data = pd.read_csv(data_address, header = 0).dropna()
     data = data.drop(labels = ['Date'], axis=1)
     data = scaler.fit_transform(data)
