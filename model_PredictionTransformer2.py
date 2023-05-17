@@ -4,22 +4,8 @@ import numpy as np
 import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
 import matplotlib.pyplot as plt
-
-def split_dataset(data, train_test_split):
-    train_size = int(len(data) * train_test_split)
-    train, test = data[0:train_size], data[train_size:len(data)]
-    return train, test  
-
-def transform_dataset(ds, lookback):
-    x = []
-    y = []
-    ds = np.array(ds)
-    for i in range(lookback, ds.shape[0]):
-        x.append(ds[i-lookback:i])                                                      
-        y.append(ds[i,0])                                                               
-    x= np.array(x).astype('float32')                                                                             
-    y= np.array(y).astype('float32')
-    return x, y
+from model_ClassificationTransformer import split_dataset, transform_dataset
+ 
 def transformer(inputs, number_heads, size_heads, feature_dimensions, dropout):
 
     x = layers.LayerNormalization(epsilon = 1e-6)(inputs)

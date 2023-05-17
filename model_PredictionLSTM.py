@@ -1,4 +1,4 @@
-from model_PredictionTransformer2 import split_dataset, transform_dataset
+from model_ClassificationTransformer import split_dataset, transform_dataset
 import pandas as pd
 import keras
 from keras.models import Sequential

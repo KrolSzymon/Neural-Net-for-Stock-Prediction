@@ -3,11 +3,11 @@ import pandas as pd
 import tensorflow as tf
 from tensorflow import keras
 from keras import layers
+from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler 
 
-def split_dataset(data, train_test_split):
-    train_size = int(len(data) * train_test_split)
-    train, test = data[0:train_size], data[train_size:len(data)]
+def split_dataset(data, split):
+    train, test = train_test_split(data, train_size = split , shuffle = False)
     return train, test  
 
 def transform_dataset(ds, lookback):
