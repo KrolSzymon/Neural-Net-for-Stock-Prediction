@@ -23,11 +23,11 @@ def predict_future(prediction, training_range, num_features, timesteps_in_future
 
 
 if __name__ == "__main__":
-    timesteps_in_future = 10
-    model = load_model('./Models/transformer.h5')
-    dataset = './Data/BTC.csv'
+    timesteps_in_future = 5
+    model = load_model('./Models/LSTM-UBER-FINAL.h5')
+    dataset = './Data/HSBC.csv'
     scaler = MinMaxScaler()
-    lookback = 30
+    lookback = 60
     plt.style.use('default')
 
     dataset = read_csv(dataset, header = 0).dropna()
@@ -60,7 +60,7 @@ if __name__ == "__main__":
 
 
     plt.legend()
-    plt.title('BTC and S&P 500 Open Price Prediction')
+    plt.title('UBER Stock Price Prediction')
     plt.show()
 
 

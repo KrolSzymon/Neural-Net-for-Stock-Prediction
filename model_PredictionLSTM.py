@@ -12,19 +12,19 @@ import matplotlib.pyplot as plt
 if __name__ == "__main__":
     validation_split = 0.8
     dropout = 0.2
-    lookback = 30
+    lookback = 60
     epoch_amount = 100
     batch = 10
     features = 15
-    units_1 = 100
-    units_2 = 75
-    units_3 = 50
-    optimizer = keras.optimizers.Adam(learning_rate=0.0001)
+    units_1 = 300
+    units_2 = 200
+    units_3 = 100
+    optimizer = keras.optimizers.Adam(learning_rate=0.001)
     data_address = './Data/BTC.csv'
-    model_address = './Models/LSTM-BTC-2021.h5'
+    model_address = './Models/LSTM-BTC-FINAL-NOSNP.h5'
     scaler = MinMaxScaler()
     data = pd.read_csv(data_address, header = 0).dropna()
-    data = data.drop(labels = ['Date'],axis=1)
+    data = data.drop(labels = ['Date','snp_Open', 'snp_High', 'snp_Low','snp_Close', 'snp_Volume', 'snp_Dividends', 'snp_Stock Splits'],axis=1)
     data = scaler.fit_transform(data)
     
     data, test_data = split_dataset(data,validation_split)

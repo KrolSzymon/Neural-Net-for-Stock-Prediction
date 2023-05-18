@@ -76,7 +76,7 @@ if __name__ == "__main__":
     inpout_shape = train_x.shape[1:]
 
     model = build_model(inpout_shape, head_size, number_heads, feature_dimensions, number_blocks, perceptron_units, dropout, mlp_dropout)
-    model = keras.models.load_model("./Models/transformer_BTC.h5")
+    model = keras.models.load_model("./Models/transformer_BTCS.h5")
     model.compile(optimizer = keras.optimizers.Adam(learning_rate = 0.0001), loss = 'mean_squared_error')
     callbacks = [keras.callbacks.ModelCheckpoint("./Models/transformer_BTC.h5", save_best_only = True, monitor = 'val_loss')]
     history = model.fit(train_x, train_y, epochs = number_epochs, batch_size = batch_size, validation_split = validation_split, callbacks = callbacks)
