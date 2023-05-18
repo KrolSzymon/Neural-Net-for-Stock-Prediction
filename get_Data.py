@@ -3,11 +3,11 @@ import pandas as pd
 import numpy as np
 
 
-def create_dataset(ticker,csv_address):
+def create_dataset(ticker,csv_address, start_date):
     snp = yf.Ticker("SWPPX")
     stock = yf.Ticker(ticker)
-    stock_history = stock.history('max')
-    snp_history = snp.history('max')
+    stock_history = stock.history(start=start_date)
+    snp_history = snp.history(start=start_date)
 
     snp_history.index = snp_history.index.tz_localize(None)
     stock_history.index = stock_history.index.tz_localize(None)
@@ -38,7 +38,8 @@ def create_dataset(ticker,csv_address):
     print (result.shape[1])
 
 if __name__ == "__main__":
-    ticker = 'UBER'
-    save_to = './Data/UBER.csv'
-    create_dataset(ticker,save_to)
+    start_date = '2021-01-01'
+    ticker = 'BTC-USD'
+    save_to = './Data/BTC.csv'
+    create_dataset(ticker,save_to, start_date)
     

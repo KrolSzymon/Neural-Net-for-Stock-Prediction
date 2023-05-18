@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
 import matplotlib.pyplot as plt
-from model_ClassificationTransformer import split_dataset, transform_dataset
+from model_ClassificationTransformer import split_dataset
  
 
 def transform_dataset(ds, lookback):
@@ -60,9 +60,9 @@ if __name__ == "__main__":
     perceptron_units = [128]
     dropout = 0.25
     mlp_dropout = 0.4
-    lookback = 100
+    lookback = 120
     train_test_split = 0.8
-    number_epochs = 500
+    number_epochs = 100
     batch_size = 100
     validation_split = 0.2
     scaler = MinMaxScaler()
@@ -76,9 +76,9 @@ if __name__ == "__main__":
     inpout_shape = train_x.shape[1:]
 
     model = build_model(inpout_shape, head_size, number_heads, feature_dimensions, number_blocks, perceptron_units, dropout, mlp_dropout)
-    #model = keras.models.load_model("./Models/transformer.h5")
-    model.compile(optimizer = keras.optimizers.Adam(learning_rate = 0.01), loss = 'mean_squared_error')
-    callbacks = [keras.callbacks.ModelCheckpoint("./Models/transformer-100LB.h5", save_best_only = True, monitor = 'val_loss')]
+    model = keras.models.load_model("./Models/transformer_BTC.h5")
+    model.compile(optimizer = keras.optimizers.Adam(learning_rate = 0.0001), loss = 'mean_squared_error')
+    callbacks = [keras.callbacks.ModelCheckpoint("./Models/transformer_BTC.h5", save_best_only = True, monitor = 'val_loss')]
     history = model.fit(train_x, train_y, epochs = number_epochs, batch_size = batch_size, validation_split = validation_split, callbacks = callbacks)
     plot_results(history)
 
