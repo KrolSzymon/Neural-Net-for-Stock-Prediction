@@ -20,8 +20,8 @@ def transform_dataset(ds, lookback):
 def transformer(inputs, number_heads, size_heads, feature_dimensions, dropout):
 
     x = layers.LayerNormalization(epsilon = 1e-6)(inputs)
-    x = layers.MultiHeadAttention(num_heads = number_heads, key_dim = size_heads, dropout = dropout)(x, x)
-    x = layers.Dropout(dropout)(x)
+    attention = layers.MultiHeadAttention(num_heads = number_heads, key_dim = size_heads, dropout = dropout)(x, x)
+    x = layers.Dropout(dropout)(attention)
 
     res = x + inputs
 
@@ -52,19 +52,20 @@ def plot_results(history):
     plt.show()
 
 if __name__ == "__main__":
+    model_address = './Models/transformer_BTC.h5'
     dataset = './Data/BTC.csv'
     head_size = 128
-    number_heads = 16
+    number_heads = 4
     feature_dimensions = 15
-    number_blocks = 4
-    perceptron_units = [128]
-    dropout = 0.25
-    mlp_dropout = 0.4
-    lookback = 120
-    train_test_split = 0.8
-    number_epochs = 100
-    batch_size = 100
-    validation_split = 0.2
+    number_blocks = 1
+    perceptron_units = [4]
+    dropout = 0.1
+    mlp_dropout = 0.3
+    lookback = 20
+    train_test_split = 0.9
+    number_epochs = 200
+    batch_size = 20
+    validation_split = 0.15
     scaler = MinMaxScaler()
 
     dataset = pd.read_csv(dataset).dropna()
@@ -76,9 +77,9 @@ if __name__ == "__main__":
     inpout_shape = train_x.shape[1:]
 
     model = build_model(inpout_shape, head_size, number_heads, feature_dimensions, number_blocks, perceptron_units, dropout, mlp_dropout)
-    model = keras.models.load_model("./Models/transformer_BTCS.h5")
-    model.compile(optimizer = keras.optimizers.Adam(learning_rate = 0.0001), loss = 'mean_squared_error')
-    callbacks = [keras.callbacks.ModelCheckpoint("./Models/transformer_BTC.h5", save_best_only = True, monitor = 'val_loss')]
+    #model = keras.models.load_model("./Models/transformer_BTC(pretty good).h5")
+    model.compile(optimizer = keras.optimizers.Adam(learning_rate = 0.001), loss = 'mean_squared_error')
+    callbacks = [keras.callbacks.ModelCheckpoint(model_address, save_best_only = True, monitor = 'val_loss')]
     history = model.fit(train_x, train_y, epochs = number_epochs, batch_size = batch_size, validation_split = validation_split, callbacks = callbacks)
     plot_results(history)
 
@@ -86,5 +87,16 @@ if __name__ == "__main__":
     training_performance = pd.DataFrame(data = {'Training Predictions': training_performance[:,0], 'Training Actual': train_y})
     plt.plot(training_performance['Training Predictions'], color = 'red', label = 'Predicted')
     plt.plot(training_performance['Training Actual'], color = 'blue', label = 'Actual')
+    plt.title('Training Performance')
+    plt.xlabel('Time')
+    plt.ylabel('Price')
+    plt.tick_params(
+        axis='both',    
+        which='both',      
+        bottom=False,     
+        left=False,
+        labelbottom=False,
+        labelleft=False,
+        )
     plt.legend()
     plt.show()

@@ -6,6 +6,7 @@ from sklearn.preprocessing import MinMaxScaler
 import pandas as pd
 from numpy import newaxis
 import matplotlib.pyplot as plt
+import yfinance as yf
 
 def predict_future(prediction, training_range, num_features, timesteps_in_future):
     transformed_list= prediction[-training_range:]
@@ -23,12 +24,12 @@ def predict_future(prediction, training_range, num_features, timesteps_in_future
 
 
 if __name__ == "__main__":
-    timesteps_in_future = 5
-    model = load_model('./Models/LSTM-UBER-FINAL.h5')
-    dataset = './Data/HSBC.csv'
+    timesteps_in_future = 10
+    model = load_model('./Models/transformer_BTC.h5')
+    dataset = './Data/BTC.csv'
     scaler = MinMaxScaler()
-    lookback = 60
-    plt.style.use('default')
+    lookback = 20
+
 
     dataset = read_csv(dataset, header = 0).dropna()
     dataset_no_date = dataset.drop(labels=['Date'], axis = 1 )
@@ -52,15 +53,17 @@ if __name__ == "__main__":
 
     first_date = last_date + pd.DateOffset(days = 1)
     predicted_values.index = pd.DatetimeIndex(pd.date_range(first_date, periods = timesteps_in_future, freq = 'D'))
-
+    actual = yf.Ticker('BTC-USD').history(start = first_date, end = first_date + pd.DateOffset(days = timesteps_in_future))
     plt.figure(figsize = (20,10), dpi = 150)
 
-    dataset['Open'].plot(label = 'Open' , color = 'blue')
-    predicted_values['Open'].plot(label = 'Open - Prediction', color = 'red')
-
-
+    actual['Open'].plot( color = 'blue')
+    dataset['Open'].plot(label = 'Actual Price' , color = 'blue')
+    predicted_values['Open'].plot(label = 'Price Prediction', color = 'red')
+    print(predicted_values['Open'])
+    predicted_values.to_csv('./Data/predicted_values.csv')
+    plt.title('Training Performance')
     plt.legend()
-    plt.title('UBER Stock Price Prediction')
+    plt.title('BTC-USD Price Prediction with transformer')
     plt.show()
 
 

@@ -38,8 +38,8 @@ def create_dataset(ticker,csv_address, start_date):
     print (result.shape[1])
 
 if __name__ == "__main__":
-    start_date = '2019-01-01'
-    ticker = 'MCD'
-    save_to = './Data/MCD.csv'
+    start_date = '2022-01-01'
+    ticker = 'BTC-USD'
+    save_to = './Data/BTC_shorter.csv'
     create_dataset(ticker,save_to, start_date)
     

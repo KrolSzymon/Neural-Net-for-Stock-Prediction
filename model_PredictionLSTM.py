@@ -6,25 +6,26 @@ from keras.models import Sequential
 from keras.layers import LSTM
 from keras.layers import Dropout
 from keras.layers import Dense
+import keras.layers as layers
 from sklearn.preprocessing import MinMaxScaler
 import matplotlib.pyplot as plt
 
 if __name__ == "__main__":
-    validation_split = 0.8
-    dropout = 0.2
-    lookback = 60
+    validation_split = 0.9
+    dropout = 0.3
+    lookback = 30
     epoch_amount = 100
     batch = 10
     features = 15
-    units_1 = 300
-    units_2 = 200
+    units_1 = 100
+    units_2 = 100
     units_3 = 100
     optimizer = keras.optimizers.Adam(learning_rate=0.001)
-    data_address = './Data/BTC.csv'
-    model_address = './Models/LSTM-BTC-FINAL-NOSNP.h5'
+    data_address = './Data/HSBC.csv'
+    model_address = './Models/LSTM_HSBC.h5'
     scaler = MinMaxScaler()
     data = pd.read_csv(data_address, header = 0).dropna()
-    data = data.drop(labels = ['Date','snp_Open', 'snp_High', 'snp_Low','snp_Close', 'snp_Volume', 'snp_Dividends', 'snp_Stock Splits'],axis=1)
+    data = data.drop(labels = ['Date'],axis=1)
     data = scaler.fit_transform(data)
     
     data, test_data = split_dataset(data,validation_split)
@@ -38,6 +39,8 @@ if __name__ == "__main__":
     model.add(LSTM(units=units_1,return_sequences=True,input_shape=(input_shape, feature_shape)))
     model.add(Dropout(dropout))
     model.add(LSTM(units=units_2,return_sequences=True))
+    model.add(Dropout(dropout))
+    model.add(LSTM(units=units_3, return_sequences=True))
     model.add(Dropout(dropout))
     model.add(LSTM(units=units_3))
     model.add(Dropout(dropout))
@@ -53,5 +56,17 @@ if __name__ == "__main__":
     training_performance = pd.DataFrame(data = {'Training Predictions': training_performance[:,0], 'Training Actual': y_train})
     plt.plot(training_performance['Training Predictions'], color = 'red', label = 'Predicted')
     plt.plot(training_performance['Training Actual'], color = 'blue', label = 'Actual')
-    plt.legend()
+    plt.grid(color='lightgray', linestyle='-', linewidth=1)
+    plt.title('Training Performance')
+    plt.xlabel('Time')
+    plt.ylabel('Price')
+    plt.tick_params(
+        axis='both',    
+        which='both',      
+        bottom=False,     
+        left=False,
+        labelbottom=False,
+        labelleft=False,
+        )
+    
     plt.show()
